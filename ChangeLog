@@ -1,0 +1,56 @@
+3.1.0:
+
+    * Added local file-based authorization
+
+    * Authorization mechanism is aligned to be more extensible
+
+    * Better regression tests
+
+3.0.0:
+
+    * Near-complete re-write
+
+    * Passes splint and valgrind tests
+
+    * Added regression tests
+
+    * Added GeoIP lookup on the client address
+
+    * IPv6 functional
+
+2.0.3:
+    
+    * Renamed back to stonesh
+
+2.0.2:
+
+    * Renamed to sash
+
+2.0.2rc1:
+
+    * Renamed to stonesh2
+
+2.0.1rc4:
+ 
+    * Uses config.h for version information
+
+    * stonewho and tools were missing from dist tarball
+
+2.0.1rc3:
+
+    * Cleaned up buffer size macros
+
+    * Added man pages for hosts.lst, stonesh, stonesh.conf
+
+2.0.1rc2:
+
+    * Added ability to change full pathname for ssh and netcat binaries.  The 
+      creation of the chrooted environment honors the names as well.
+
+    * Created stonewho script to list active sessions
+
+    * Fix bug that prevented proper handling of '*' in user's host attribute list
+
+2.0.1rc1:
+
+    * Initial release candidate

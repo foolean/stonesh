@@ -1,0 +1,28 @@
+=head1 NAME
+
+hosts.lst - stonesh permitted hosts configuration file
+
+=head1 SYNOPSIS
+
+/etc/stonesh/hosts.lst
+
+=head1 DESCRIPTION
+
+When a client requests access to a host, stonesh checks for the hostname portion of the fqdn in the list of hosts in hosts.lst.  Access is immediately denied if the host is not found.  Unless specified, stonesh will use port 22.  Text from a "#" character until the end of the line is a comment, and is ignored along with blank lines.
+
+For each host a single line should be present with the following information:
+
+=over 6
+
+hostname[:port][:country-code1,country-code2,...]
+
+=back
+
+=head1 AUTHOR
+
+Bennett Samowich <bennett@foolean.org>
+
+=head1 SEE ALSO
+
+stonesh(1) stonesh.conf(5) 
+

@@ -1,0 +1,28 @@
+=head1 NAME
+
+users.lst - stonesh user authorization file
+
+=head1 SYNOPSIS
+
+/etc/stonesh/users.lst
+
+=head1 DESCRIPTION
+
+When a client requests access to a host, stonesh checks for the user and the requested host in users.lst.  Access is immediately denied if the user is not found.  Host entries with a trailing '+' indicate that the user is permitted to use stonesh's proxy mode to connect to that host.  Text from a "#" character until the end of the line is a comment, and is ignored along with blank lines.
+
+For each user a single line should be present with the following information:
+
+=over 6
+
+user:[host1[+],host2[+],...]
+
+=back
+
+=head1 AUTHOR
+
+Bennett Samowich <bennett@foolean.org>
+
+=head1 SEE ALSO
+
+stonesh(1) stonesh.conf(5) 
+

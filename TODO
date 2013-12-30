@@ -1,0 +1,9 @@
+# The "To Do" list
+
+
+* Add regression tests for functions that don't have them
+  (see: test/README)
+
+* Consider making LDAP filters a full configuration option
+
+* Add code for proxy mode instead of calling nc(1)

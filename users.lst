@@ -1,0 +1,13 @@
+# /etc/stonesh/users.lst
+#
+# Users that that are permitted to use stonesh and the hosts
+# they are permitted to connect to.
+#
+# Example:
+#     user:[host1[+],host2[+],...]
+#
+# A trailing '+' on a hostname indicates that the user is permitted to
+# use stonesh's proxy mode for that host.
+#
+##############################################################################
+

@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# pam_script_ses_close 
+#   This script is executed by pam_script.so when the user's session 
+#   closes.  The main purpose is to clean up the user's chrooted
+#   environment when their last session closes.
+
+SESSIONS=$(/usr/bin/lsof -u ${PAM_USER} | /bin/grep -c "sshd.*cwd.*/home/chroot/${PAM_USER}$")
+
+/usr/bin/logger -it "pam_ses_close" "${PAM_USER} has ${SESSIONS} sessions left"
+if [ ${SESSIONS} -eq 0 ]
+then
+  /usr/bin/logger -it "pam_ses_close" "Last session closing for ${PAM_USER}, cleaning up chrooted environment"
+  /bin/rm -rf "/home/chroot/${PAM_USER}"
+fi
+

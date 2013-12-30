@@ -1,0 +1,110 @@
+=head1 NAME
+
+stonesh.conf - stonesh configuration file
+
+=head1 SYNOPSIS
+
+/etc/stonesh/stonesh.conf
+
+=head1 DESCRIPTION
+
+stonesh(1) reads configuration data from /etc/stonesh/stonesh.conf.  The file contains keyword-argument pairs, one per line.  Lines starting with '#' and empty lines are interpreted as comments.  Arguments may optionally be enclosed in double quotes (") in order to represent arguments containing spaces.
+
+=head1 OPTIONS
+
+=over 6
+
+=item B<debug> [true|false]
+
+Turns debug logging on or off.
+
+default: false
+
+=item B<authorizedServiceTag> [text]
+
+Tag to prepend to the hostname when querying LDAP for proxied access authorization.
+
+default: proxy
+
+=item B<enableProxy> [true|false]
+
+Enables or disables proxied session setup.  When disabled only bastioned connections are permitted.
+
+default: false
+
+=item B<proxyKeyword>
+
+Keyword the client must use to request a proxied session.
+
+=over 6
+
+I<Example:>
+
+ssh -oProxyCommand="ssh bastion <keyword> %h" <host>
+
+=back
+
+default: direct
+
+=item B<useLDAP> [true|false]
+
+Enable or disable the use of LDAP for client authorization.
+
+default: true
+
+=item B<LDAPuri> [uri]
+
+The LDAP URI used to connect to the LDAP server.
+
+default: the value found in ldap.conf
+
+=item B<LDAPbase> [base]
+
+The search base for LDAP queries.
+
+default: the value found in ldap.conf
+
+=item B<HostsFile> [file]
+
+File containing the list of hosts that stonesh will permit access to.
+
+default: /etc/stonesh/hosts.lst
+
+=item B<sshPath> [path]
+
+Full path to the ssh binary to use for bastioned sessions.  
+
+default: /usr/bin/ssh
+
+=item B<ncPath> [path]
+
+Full path to the netcat binary to use for proxied sessions.
+
+default: /bin/nc
+
+=item B<GeoIP> [path]
+
+Full path to the IPv4 GeoIP database
+
+default: /usr/share/GeoIP/GeoIP.dat
+
+=item B<GeoIP6> [path]
+
+Full path to the IPv6 GeoIP database
+
+default: /usr/share/GeoIP/GeoIP6.dat
+
+=back
+
+=head1 NOTES
+
+When used in a chrooted environment, sshPath and ncPath can be used to alter the actual binary called during session setup.
+
+=head1 AUTHOR
+
+Bennett Samowich <bennett@foolean.org>
+
+=head1 SEE ALSO
+
+stonesh(1) hosts.lst(5) 
+

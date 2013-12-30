@@ -1,0 +1,66 @@
+=head1 NAME
+
+stonewho - show current stonesh users
+
+=head1 SYNOPSIS
+
+stonewho
+
+stonewho -n
+
+=head1 DESCRIPTION
+
+The stonewho command shows information about all active stonesh sessions.
+
+=head1 OPTIONS
+
+=over 6
+
+=item -h 
+
+Display usage information
+
+=item -n
+
+Display IP addresses instead of hostnames for connection information
+
+=back
+
+=head1 OUTPUT FIELDS
+
+=over 6
+
+=item MODE
+
+Mode of operation for the connection (B = Bastioned, P = Proxied)
+
+=item USER
+
+The username associated with the session 
+
+=item TTY
+
+The psudo-terminal, if one exists, associated with the session
+
+=item START
+
+The time, in local time, the session was started
+
+=item TO
+
+The internal host the session is connected to
+
+=item FROM
+
+The remote client host and port
+ 
+=back
+
+=head1 AUTHOR
+
+Bennett Samowich <bennett@foolean.org>
+
+=head1 SEE ALSO
+
+stonesh(1)
+

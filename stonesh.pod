@@ -1,0 +1,108 @@
+=head1 NAME
+
+stonesh - The "Stone Shell"
+
+=head1 SYNOPSIS
+
+stonesh
+
+stonesh -c "[host]"
+
+stonesh -c "[host] [command]"
+
+stonesh -c "[keyword] [host]"
+
+=head1 DESCRIPTION
+
+The "Stone Shell" stonesh(1) is a restrictive shell intended to run
+on bastion hosts and control access to internal hosts.  The stonesh provides
+two main mechanisms for connecting to internal hosts.  
+
+=over 6
+
+=item Bastioned connections
+
+Bastion connections are connections where the user requests access to an 
+internal host and stonesh initiates a controlled ssh(1) session from the
+bastion host itself.
+
+=item Proxied connections
+
+Proxied connections are connections where the user requests access to an
+internal host and stonesh initiates a controlled nc(1) session from the 
+bastion host.  Proxied connections are requested by using ssh's 
+ProxyCommand option.
+
+=back
+
+=head1 OPTIONS
+
+=over 6
+
+=item -c "[[host] [command]] | [[keyword] [host]]"
+
+Command to run.  This is typical for most shells.  There are two formats 
+for the commands.
+
+=over 6
+
+=item bastioned connections
+
+[host] [command, args, ...]
+
+=item proxied connections
+
+[keyword] [host]
+
+=back
+
+=item -C [configuration file]
+
+Specify an alternate configuration file to use.  Mostly for debugging purposes.
+
+=item -v
+
+Display version information.
+
+=back
+
+=head1 USAGE
+
+The user's shell should be set to stonesh either directly or indirectly
+through chrooted environment setup.
+
+=over 6
+
+=item ssh [bastion]
+
+Initiate a connection to the bastion host and run stonesh in bastion mode.  Since an
+internal host was not specified stonesh(1) will prompt for the host.
+
+=item ssh [bastion] [host]
+
+Initiate a connection to the bastion host and run stonesh in bastion mode to the 
+specified host.
+
+=item ssh -t [bastion] "[host] [command] [args...]"
+
+Initiate a connection to the bastion host and run stonesh in bastion mode to the 
+specified host and run the specified command.
+
+=item ssh -oProxyCommand="ssh [bastion] [keyword] %h" -oLogLevel=Quiet [host]
+
+Initiate a proxied connection to the specified host.
+
+=back 
+
+=head1 BUGS
+
+None to report yet
+
+=head1 AUTHOR
+
+Bennett Samowich <bennett@foolean.org>
+
+=head1 SEE ALSO
+
+hosts.lst(5) stonesh.conf(5)
+

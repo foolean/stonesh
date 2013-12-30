@@ -1,0 +1,12 @@
+# /etc/stonesh/hosts.lst
+#
+# Hosts that stonesh will permit access to
+#
+# Hosts should be listed in host[:port][:countr-code1,country-code2,...]
+# format.  stonesh will assume tcp/22 if :port is not specified.
+#
+# Example:
+#    hostname[:port][:country-code1,country-code2,...]
+#
+##############################################################################
+

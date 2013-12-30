@@ -1,0 +1,220 @@
+#!/bin/bash
+#
+# pam_script_ses_open - Script to be invoked from pam_script that sets up the
+#                       user's chroot environment.
+#
+##############################################################################
+
+# Username for this session
+USER="${PAM_USER}"
+
+# stonesh configuration file
+CONFIG="/etc/stonesh/stonesh.conf"
+
+# Path to the directory where the chroot environments 
+# are to be created 
+CHROOT="/home/chroot"
+
+# Path to the stonesh binary
+STONESH="/usr/local/bin/stonesh"
+
+# Logging macro
+LOGGER="/usr/bin/logger -it \"pam_ses_open\""
+
+# Directory structure for the chrooted environment
+DIRS="bin dev etc etc/ldap etc/ssh etc/ssl etc/ssl/certs etc/stonesh home \
+      lib usr usr/bin usr/lib usr/local usr/local/bin"
+
+# Applications that we want installed in the chrooted environment
+APPS="/bin/sh /usr/bin/xauth /bin/nc /usr/bin/ssh ${STONESH}"
+
+# Libraries that are needed and may not be found by using ldd(1) 
+# against the applications listed in APPS
+LIBS="/lib/libnss_files* /lib/libnss_dns* /lib/ld-*"
+
+##################################################
+### YOU SHOULD BE SAFE TO LEAVE THE REST ALONE ###
+##################################################
+
+# Save our umask
+UMASK=`umask`
+
+# Chroot environment to create
+CHROOTDIR="${CHROOT}/${USER}"
+
+# Get the path to the ssh binary that we're looking for from stonesh.conf
+SSH=`grep "^sshPath" ${CONFIG} | sed -e 's/#.*//' | sed -e '/^$/d' | awk '{print $2}'`
+if [ "${SSH}" == "" ]
+then
+  SSH="/usr/bin/ssh"
+fi
+
+# Get the path to the netcat binary that  we're looking for from stonesh.conf
+NETCAT=`grep "^ncPath" ${CONFIG} | sed -e 's/#.*//' | sed -e '/^$/d' | awk '{print $2}'`
+if [ "${NETCAT}" == "" ]
+then
+  NETCAT="/bin/nc"
+fi
+
+# Get the users passwd entry and extract the gid and shell
+PWENT=$(getent passwd "${USER}")
+GID=$(echo "${PWENT}" | cut -f4 -d:)
+SHELL=$(echo "${PWENT}" | cut -f7 -d:)
+
+# Set traps ?
+
+# Does chroot environment exist?
+# No, create chroot environment
+
+# Create the root of the chroot structures if 
+# it doesn't already exist
+if [ ! -e "${CHROOT}" ]
+then
+  umask=022
+  mkdir -p "${CHROOT}"
+  chown -R root:root "${CHROOT}"
+  umask=${UMASK}  
+fi
+
+# Create the user's chroot environment if it doesn't exist
+if [ ! -e "${CHROOTDIR}" ]
+then
+  ${LOGGER} "Creating ${CHROOTDIR}"
+  mkdir -m 0755 "${CHROOTDIR}"
+
+  for DIR in ${DIRS}
+  do
+    mkdir "${CHROOTDIR}/${DIR}"
+  done
+
+  chown -R root:root "${CHROOTDIR}"
+
+  # Create the user's home directory inside the chroot environment
+  mkdir -m 0700 "${CHROOTDIR}/home/${USER}"
+  chown -R ${USER}:${GID} "${CHROOTDIR}/home/${USER}"
+  chmod -R go-rwx "${CHROOTDIR}/home/${USER}" 
+
+  # Copy in the apps and related libraries
+  for APP in ${APPS} 
+  do
+    # Make sure the directory for the app exists
+    DIR=$(dirname "${APP}")
+    if [ ! -e "${CHROOTDIR}/${DIR}" ]
+    then
+      umask 022
+      mkdir -m 0755 -p "${CHROOTDIR}/${DIR}"
+      umask ${UMASK}
+    fi
+
+    # Copy in the app itself
+    cp -Lp "${APP}" "${CHROOTDIR}/${DIR}"
+
+    # Copy in libraries for this app
+    ldd "${APP}" | awk '{if ($3 ~ ".so.") print $3}' | \
+    while read LIB
+    do
+      DIR=$(dirname "${LIB}")
+      if [ ! -e "${CHROOTDIR}/${DIR}" ]
+      then
+        mkdir -m 0755 -p "${CHROOTDIR}/${DIR}"
+      fi
+    
+      # Copy in the library itself
+      if [ ! -e "${CHROOTDIR}/${DIR}/${LIB}" ]
+      then
+        cp -Lp "${LIB}"  "${CHROOTDIR}/${DIR}/"
+      fi
+    done
+  done
+
+  # Copy in libraries that may not be found using ldd(1)
+  for LIB in ${LIBS}
+  do
+    # Make sure the directory for the app exists
+    DIR=$(dirname "${LIB}")
+    if [ ! -e "${CHROOTDIR}/${DIR}" ]
+    then
+       mkdir -m 0755 -p "${CHROOTDIR}/${DIR}"
+    fi
+
+    if [ ! -e "${CHROOTDIR}/${DIR}/${LIB}" ]
+    then
+      if [ -f ${LIB} -a ! -L ${LIB} ] ; then
+        cp -p ${LIB} "${CHROOTDIR}/${DIR}/"
+      fi
+      if [ -L "${LIB}" ] ; then
+        cp -ap ${LIB} "${CHROOTDIR}/${DIR}/"
+      fi
+    fi
+  done
+
+  # Generate necessary devices
+  mknod -m 666 "${CHROOTDIR}/dev/tty"  c 5 0
+  mknod -m 666 "${CHROOTDIR}/dev/urandom" c 1 9
+  mknod -m 666 "${CHROOTDIR}/dev/random" c 1 8
+  mknod -m 666 "${CHROOTDIR}/dev/null" c 1 3
+
+  # Need to link /lib64 to /lib for things to work
+  cd "${CHROOTDIR}"
+  ln -s lib lib64
+
+  # Generate necessary configuration files
+  getent passwd root        > "${CHROOTDIR}/etc/passwd"
+  echo "${PWENT}"          >> "${CHROOTDIR}/etc/passwd"
+  chmod 444 "${CHROOTDIR}/etc/passwd"
+  echo "root:*:0:"          > "${CHROOTDIR}/etc/group"
+  echo "users:*:${GID}"    >> "${CHROOTDIR}/etc/group"
+  chmod 444 "${CHROOTDIR}/etc/group"
+
+  # Move the netcat and ssh binaries to the path in stonesh.conf
+  mv "${CHROOTDIR}/usr/bin/ssh" "${CHROOTDIR}/${SSH}"
+  mv "${CHROOTDIR}/bin/nc"      "${CHROOTDIR}/${NETCAT}"
+
+  # Hard link the log device
+  ln /home/chroot/log "${CHROOTDIR}/dev/log"
+
+  # Force the use of stonesh
+  ln -s "${STONESH}" "${CHROOTDIR}/${SHELL}" 
+else
+  ${LOGGER} "${CHROOTDIR} already exists"
+fi
+
+# Yes, refresh configurations files in chroot environment
+${LOGGER} "Copying configurations"
+
+# Copy the .Xauthority
+if [ -e "/home/${USER}/.Xauthority" ]
+then
+  cp -p /home/${USER}/.Xauthority "${CHROOTDIR}/home/${USER}"
+  chown -R ${USER}:${GID} "${CHROOTDIR}/home/${USER}"
+  chmod -R go-rwx "${CHROOTDIR}/home/${USER}" 
+fi
+
+# Copy basic configuration files
+cp /etc/resolv.conf         "${CHROOTDIR}/etc/resolv.conf"
+chmod 444 "${CHROOTDIR}/etc/resolv.conf"
+cp /etc/hosts               "${CHROOTDIR}/etc/hosts"
+chmod 444 "${CHROOTDIR}/etc/hosts"
+cp /etc/ssh/ssh_known_hosts "${CHROOTDIR}/etc/ssh"
+chmod 444 "${CHROOTDIR}/etc/ssh/ssh_known_hosts"
+cp /etc/ssh/ssh_config      "${CHROOTDIR}/etc/ssh"
+chmod 444 "${CHROOTDIR}/etc/ssh/ssh_config"
+cp /etc/stonesh/hosts.lst   "${CHROOTDIR}/etc/stonesh"
+chmod 444 "${CHROOTDIR}/etc/stonesh/hosts.lst"
+cp /etc/stonesh/stonesh.conf   "${CHROOTDIR}/etc/stonesh"
+chmod 444 "${CHROOTDIR}/etc/stonesh/stonesh.conf"
+
+# SSL Cert
+TLS_CACERT=$(grep TLS_CACERT /etc/ldap/ldap.conf | awk '{print $2}')
+TLS_CERT=$(grep TLS_CERT /etc/ldap/ldap.conf | awk '{print $2}')
+for CERT in ${TLS_CACERT} ${TLS_CERT}
+do
+  cp --parents "${CERT}" "${CHROOTDIR}"
+  chmod 0444 "${CHROOTDIR}${CERT}"
+done
+
+# LDAP
+cp /etc/ldap/ldap.conf "${CHROOTDIR}/etc/ldap"
+chmod 444 "${CHROOTDIR}/etc/ldap/ldap.conf"
+chown root:root "${CHROOTDIR}/etc/ldap/ldap.conf"
+

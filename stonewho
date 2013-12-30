@@ -1,0 +1,83 @@
+#!/bin/bash
+#
+# stonewho - This simple script outputs a list of users that are connected
+#            to the bastion host.  The script will display the stonesh user's 
+#            remote host only when run as root.
+#
+##############################################################################
+
+function usage {
+  echo "Usage: $0 [ OPTIONS ]"
+  echo ""
+  echo "Where:"
+  echo "  -h         - Print this message and exit"
+  echo "  -n         - Display IP address instead of hostname"
+
+  exit 0
+}
+
+# Path to stonesh.conf
+CONFIG="/etc/stonesh/stonesh.conf"
+
+N=""
+while getopts "hn" OPTION
+do
+  case $OPTION in
+    h) 
+       usage
+       exit 1
+       ;;
+    n) 
+       N="-n"
+       ;;
+    *) 
+      echo "Illegal option: '${OPTION}'"
+      exit 1
+      ;; 
+  esac
+done
+
+# Get the path to the ssh binary that we're looking for
+SSH=`grep sshPath ${CONFIG} | sed -e 's/#.*//' | sed -e '/^$/d' | awk '{print $2}'`
+if [ "${SSH}" == "" ]
+then
+  SSH="/usr/bin/ssh"
+fi
+
+# Get the path to the netcat binary that  we're looking for
+NETCAT=`grep ncPath ${CONFIG} | sed -e 's/#.*//' | sed -e '/^$/d' | awk '{print $2}'`
+if [ "${NETCAT}" == "" ]
+then
+  NETCAT="/bin/nc"
+fi
+
+# Print our header
+printf "%-4s %-8s %-12s %-19s %-20s %s\n" "MODE" "USER" "TTY" "START" "TO" "FROM" 
+
+# Grab the process listing looking for our two possible processes
+SESSIONS=0
+ps axo euser,lstart,tty,pid,ppid,args | egrep "(${SSH} -[p])|(${NETCAT} -[w])" | sort | \
+while read LINE
+do
+  S_LSTART=`echo ${LINE} | awk '{print $2" "$3" "$4" "$5" "$6}'`
+  S_START=`date -d "${S_LSTART}" "+%Y-%m-%d %H:%M:%S"`
+  S_USER=`echo ${LINE} | awk '{print $1}'`
+  S_TTY=`echo ${LINE} | awk '{print $7}'`
+  S_PID=`echo ${LINE} | awk '{print $8}'`
+  S_PPID=`echo ${LINE} | awk '{print $9}'`
+  S_RHOST=`lsof ${N} -i TCP -p ${S_PPID} -a 2>/dev/null | grep "${S_PPID}.*TCP.*$(hostname -f).*ESTABLISHED" | awk '{print $9}' | cut -f2 -d\>`
+  S_COMM=`echo ${LINE} | awk '{print $10}'`
+  S_MODE="?"
+  S_HOST=""
+  if [ "${S_COMM}" == "${NETCAT}" ]
+  then
+    S_MODE="P"
+    S_HOST=`echo ${LINE} | awk '{print $13}'`
+  fi
+  if [ "${S_COMM}" == "${SSH}" ]
+  then
+    S_MODE="B"
+    S_HOST=`echo ${LINE} | awk '{print $14}'`
+  fi
+  printf "%-4s %-8s %-12s %-19s %-20s %s\n" "${S_MODE}" "${S_USER}" "${S_TTY}" "${S_START}" "${S_HOST}" "${S_RHOST}"
+done

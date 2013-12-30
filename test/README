@@ -1,0 +1,54 @@
+These are the regression tests for stonesh.  They attempt to exercise each of
+the individual functions within the various files.  The quantity of the tests
+is a bit excessive but they have ferreted out corner cases during development.
+
+The tests can be run by running: make test
+
+
+
+[ splint ]
+
+Splint is used to check the code for vulnerabilities and coding errors.
+
+See: http://splint.org
+
+
+
+[ valgrind ]
+
+Valgrind is used to check the code for memory leaks and buffer overflows.
+
+See: http://valgrind.org/
+
+
+
+[ Functions without a regression test ]
+
+auth.c:
+    auth_user
+
+auth_ldap.c:
+    get_ldap_uri
+    get_ldap_base
+    get_auth_ldap
+
+log.c:
+    error
+    fatal
+    notice
+    debug
+
+readconf.c:
+    strdelim
+    parse_token
+    process_config_line
+    initialize_options
+    fill_default_options
+    free_options
+    read_config_file
+
+stonesh.c:
+    main
+    usage
+    version
+    catch_signal

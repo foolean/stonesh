@@ -1,0 +1,93 @@
+Stonesh, A.K.A "The Stone Shell", is a shell designed to be run on a
+bastion host which facilitates controlled access to internal systems
+without providing command-line access on the bastion host itself. 
+
+
+-[ INSTALLATION ]-
+
+# Debian
+apt-get install build-essential libldap2-dev libgeoip-dev automake autoconf
+
+# CentOS
+yum groupinstall "Development Tools"
+yum install GeoIP-dev openldap-dev automake autoconf
+
+./configure
+make
+make test
+sudo make install
+
+
+-[ CONFIGURATION ]-
+
+* edit stonesh.conf
+
+All configurations are kept in stonesh.conf.  See man stonesh.conf
+for the list of options.
+
+* edit hosts.lst
+
+Access to internal hosts is permitted via the hosts.lst file.  Requests
+for hosts that are not listed in the hosts.lst file are immediately 
+denied.  The format of the hosts.lst file is 'host[:port]'.  The port
+is optional and provides for connectivity to ssh servers running on 
+ports other than the standard tcp/22.  
+
+* edit users.lst (if using local authorization)
+
+Users are authorized via the users.lst file.  Requests from users that are
+not listed in the users.lst file are immediately denied.  The users.lst file
+is also used to authorize the user's access to specific hosts.  Additionally,
+the users.lst file controls whether the user is permitted to use stonesh's
+proxy mode feature to the specific host.  The format of the users.lst file
+is user:[host1[+],host2[+],...].  The trailing '+' indicates that the user
+is permitted to use stonesh's proxy mode to that host.
+
+
+-[ LDAP AUTHORIZATION ]-
+
+When enabled, stonesh will authorize client connections against a LDAP
+server by looking for appropriate host and authorizedService attributes. 
+The user must have a host attribute containing the hostname portion of the
+host being requested.  For example; requesting the host 'foo.bar.com' will 
+require a host attribute with the value 'foo'.  Connections will be dropped
+immediately if the host attribute doesn't exist.
+
+For proxied access, the proper authorizedService attribute must exist.  The
+format of the authorizedService value is [tag]-[hostname].  For example; if
+the tag is 'proxy' and the requesting proxied access to host 'foo.bar.com' 
+will require a authorizedService attribute with the value 'proxy-foo'.
+
+
+-[ CHROOTING ]-
+
+Whenever possible, it is adventageous to chroot users into an environment
+that only contains the applications and libraries necessary to perform
+thier work.  stonesh was rewritten from perl to C in order to facilitate
+chrooting without having to include perl into the chrooted environment.
+
+Using the ChrootDirectory functionality of sshd(8) is the preferred method
+for locking users into a secure environment.   The chrooted environment can
+be created, and removed, on the fly using pam_script and the scripts provided
+in the contrib directory of the source.
+
+
+-[ GeoIP ]-
+
+Stonesh utilizes GeoIP to validate a client's country of origin.  The use
+of GeoIP is not a perfect sciece but should provide an adequate level of
+"positive access control" in ensuring that clients are coming from expected
+countries.  It does not prevent an attacker from using a client in a permitted
+country to access the bastion.
+
+In order for GeoIP to be as accurate as it can be, it is important that the
+GeoIP database files be kept up to date.  You can either obtain an account
+with MaxMind or utilize their free databases.  Note: that the free databases
+will lag behind reality so your accuracy needs should drive your decision
+making.
+
+wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+wget http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz
+
+The GeoIP based regression tests use a static database file to ensure that
+results are not tainted by changes in the GeoIP data.
