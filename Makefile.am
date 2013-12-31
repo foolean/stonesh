@@ -21,8 +21,35 @@ man1_MAN = stonesh.1 stonewho.1
 man5_MAN = hosts.lst.5 users.lst.5 stonesh.conf.5
 man_MANS = $(man1_MAN) $(man5_MAN) 
 
-EXTRA_DIST = $(man1_MAN) $(man5_MAN) $(sbin_SCRIPTS) contrib test
-CLEANFILES = $(man_MANS) test/test_trim test/test_strtolower test/test_strtoupper test/test_get_auth_file test/test_getafbyaddr test/test_is_local test/test_is_local6 test/test_is_private test/test_is_private6 test/test_getcountrybyaddr test/test_getcountrybyaddr6 test/test_is_from_valid_country test/test_get_host_filter test/test_get_service_filter test/test_gethostentry
+EXTRA_DIST = \
+	$(man1_MAN) 	\
+	$(man5_MAN) 	\
+	$(sbin_SCRIPTS) \
+	contrib 	\
+	test
+
+CLEANFILES = 				\
+	$(man_MANS) 			\
+	test/test_trim 			\
+	test/test_strtolower 		\
+	test/test_strtoupper 		\
+	test/test_get_auth_file 	\
+	test/test_getafbyaddr 		\
+	test/test_is_local 		\
+	test/test_is_local6 		\
+	test/test_is_private 		\
+	test/test_is_private6 		\
+	test/test_getcountrybyaddr 	\
+	test/test_getcountrybyaddr6 	\
+	test/test_is_from_valid_country \
+	test/test_get_host_filter 	\
+	test/test_get_service_filter 	\
+	test/test_gethostentry		\
+	debian/stonesh.debhelper.log  	\
+	debian/stonesh.substvars
+
+CLEANDIRS = \
+	debian/stonesh
 
 install-sysconfDATA:
 	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)
@@ -82,3 +109,14 @@ test: force_look
 
 force_look:
 	true
+
+debian-package: debian/rules
+	@if test x$(HAVE_DPKG_BUILDPACKAGE) = xyes ; then \
+		dpkg-buildpackage -rfakeroot -us -uc ; \
+	else \
+		echo "Error: Debian packaging tools not found." ; \
+		echo "Package build abandoned." ; \
+	fi
+
+clean-local:
+	rm -rf $(CLEANDIRS)

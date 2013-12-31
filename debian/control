@@ -1,0 +1,19 @@
+Source: stonesh
+Section: net
+Priority: extra
+Maintainer: Bennett Samowich <bennett@foolean.org>
+Build-Depends: debhelper (>= 7.0.50~), autotools-dev, valgrind, splint, libgeoip-dev
+Standards-Version: 3.8.4
+#Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/stonesh.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/stonesh.git;a=summary
+
+Package: stonesh
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, openssh-client, netcat, libgeoip1
+Recommends: libpam-chroot, libpam-script
+Description: the "Stone Shell"
+ Stonesh, A.K.A "The Stone Shell", is a shell designed to be run on a
+ bastion host which facilitates controlled access to internal systems
+ without providing command-line access on the bastion host itself.  
+ 

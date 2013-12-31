@@ -24,6 +24,9 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([memmove memset strcasecmp strchr strdup strerror strpbrk strspn])
 
+# Debian
+AC_CHECK_PROG(HAVE_DPKG_BUILDPACKAGE, dpkg-buildpackage, "yes", "no")
+
 AC_PATH_PROG(POD2MAN, pod2man)
 if test -z "$POD2MAN"; then
     AC_MSG_ERROR([pod2man required])
