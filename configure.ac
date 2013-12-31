@@ -33,5 +33,7 @@ if test -z "$POD2MAN"; then
 fi
 
 AC_CONFIG_FILES([Makefile])
-AC_OUTPUT
+AC_OUTPUT(
+	debian/changelog
+)
 

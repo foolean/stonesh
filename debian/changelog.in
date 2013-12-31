@@ -1,4 +1,4 @@
-stonesh (3.1.0-1) unstable; urgency=low
+stonesh (@VERSION@-1) unstable; urgency=low
 
   * Self-made package
 
