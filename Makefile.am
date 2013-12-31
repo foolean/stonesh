@@ -51,6 +51,8 @@ CLEANFILES = 				\
 CLEANDIRS = \
 	debian/stonesh
 
+DISTCLEANFILES = $(distdir).tar.gz
+
 install-sysconfDATA:
 	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)
 	@if [ ! -f "$(DESTDIR)$(sysconfdir)/$(sysconf_HOSTS)" ]; then \
