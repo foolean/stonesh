@@ -56,8 +56,8 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/configure $(top_srcdir)/debian/changelog.in \
-	AUTHORS COPYING ChangeLog INSTALL NEWS TODO depcomp install-sh \
-	missing
+	$(top_srcdir)/packaging/rpm/SPECS/stonesh.spec.in AUTHORS \
+	COPYING ChangeLog INSTALL NEWS TODO depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -66,7 +66,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = debian/changelog
+CONFIG_CLEAN_FILES = debian/changelog packaging/rpm/SPECS/stonesh.spec
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" \
 	"$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" \
@@ -161,6 +161,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 GREP = @GREP@
 HAVE_DPKG_BUILDPACKAGE = @HAVE_DPKG_BUILDPACKAGE@
+HAVE_RPMBUILD = @HAVE_RPMBUILD@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -244,10 +245,14 @@ man1_MAN = stonesh.1 stonewho.1
 man5_MAN = hosts.lst.5 users.lst.5 stonesh.conf.5
 man_MANS = $(man1_MAN) $(man5_MAN) 
 EXTRA_DIST = \
-	$(man1_MAN) 	\
-	$(man5_MAN) 	\
-	$(sbin_SCRIPTS) \
-	contrib 	\
+	$(man1_MAN) 	 \
+	$(man5_MAN) 	 \
+	$(sbin_SCRIPTS)  \
+	$(sysconf_HOSTS) \
+	$(sysconf_USERS) \
+	$(sysconf_DATA)  \
+	contrib 	 \
+	stonesh.pl	 \
 	test
 
 CLEANFILES = \
@@ -271,9 +276,15 @@ CLEANFILES = \
 	debian/stonesh.substvars
 
 CLEANDIRS = \
+	packaging/rpm/BUILD     \
+	packaging/rpm/BUILDROOT \
+	packaging/rpm/SOURCES   \
+	packaging/rpm/SRPMS     \
+	packaging/rpm/RPMS      \
 	debian/stonesh
 
 DISTCLEANFILES = $(distdir).tar.gz
+rpm_topdir = `cd $(top_builddir) && pwd`/packaging/rpm
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -329,6 +340,8 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 debian/changelog: $(top_builddir)/config.status $(top_srcdir)/debian/changelog.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+packaging/rpm/SPECS/stonesh.spec: $(top_builddir)/config.status $(top_srcdir)/packaging/rpm/SPECS/stonesh.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
@@ -913,6 +926,29 @@ debian-package: debian/rules
 		echo "Error: Debian packaging tools not found." ; \
 		echo "Package build abandoned." ; \
 	fi
+rpm-package: dist
+	@if test x$(HAVE_RPMBUILD) = xyes ; then                                  \
+		cd $(rpm_topdir) ;                                                \
+		mkdir -p BUILD RPMS SOURCES SRPMS;                                \
+		cd BUILD;                                                         \
+		ln -sf ../../../$(distdir).tar.gz ;                               \
+		cd .. ;                                                           \
+		/bin/tar -C "SOURCES" --strip-components=1                        \
+			-xzf "BUILD/$(distdir).tar.gz";                           \
+		rpmbuild --define "_topdir `cd . && pwd`" --define "_prefix /usr" \
+			-ba SPECS/stonesh.spec &&                                 \
+			echo "Package successfully built in `pwd`/RPMS." &&       \
+			rm -f BUILD/$(distdir).tar.gz $(distdir).tar.gz ;         \
+	else                                                                      \
+		echo "Error: RPM executable and/or source directory not found." ; \
+		false;                                                            \
+	fi
+
+deb: debian-package
+	true
+
+rpm: rpm-package
+	true
 
 clean-local:
 	rm -rf $(CLEANDIRS)

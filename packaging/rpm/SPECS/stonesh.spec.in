@@ -1,0 +1,102 @@
+# This instructs rpmbuild to ignore unpackaged files
+%define _unpackaged_files_terminate_build 0
+
+Name:           stonesh
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        the "Stone Shell"
+Vendor:         Foolean.org
+Packager:       Foolean.org
+Group:          Applications/Internet
+License:        GPLv3
+URL:            http://www.foolean.org
+Source:         https://github.com/foolean/stonesh
+%description
+Stonesh, A.K.A "The Stone Shell", is a shell designed to be run on a
+bastion host which facilitates controlled access to internal systems
+without providing command-line access on the bastion host itself.
+
+BuildRequires: GeoIP-devel
+BuildRequires: openldap-devel
+
+%prep
+cd %{_topdir}/SOURCES
+%configure
+
+%build
+cd %{_topdir}/SOURCES
+make
+if [ -f stonesh.1 ]; then
+    gzip stonesh.1
+fi
+if [ -f stonewho.1 ]; then
+    gzip stonewho.1
+fi
+if [ -f stonesh.conf.5 ]; then
+    gzip stonesh.conf.5
+fi
+if [ -f hosts.lst.5 ]; then
+    gzip hosts.lst.5
+fi
+if [ -f users.lst.5 ]; then
+    gzip users.lst.5
+fi
+mkdir -p "%{buildroot}/etc/stonesh"
+mkdir -p "%{buildroot}/usr/bin"
+mkdir -p "%{buildroot}/usr/sbin"
+mkdir -p "%{buildroot}/usr/share/doc/stonesh"
+mkdir -p "%{buildroot}/usr/share/doc/stonesh/contrib"
+mkdir -p "%{buildroot}/usr/share/man/man1"
+mkdir -p "%{buildroot}/usr/share/man/man5"
+cp stonesh           "%{buildroot}/usr/bin/"
+cp stonewho          "%{buildroot}/usr/sbin/"
+cp stonesh.conf      "%{buildroot}/etc/stonesh/"
+cp hosts.lst         "%{buildroot}/etc/stonesh/"
+cp users.lst         "%{buildroot}/etc/stonesh/"
+cp hosts.lst.5.gz    "%{buildroot}/usr/share/man/man5/"
+cp users.lst.5.gz    "%{buildroot}/usr/share/man/man5/"
+cp stonesh.conf.5.gz "%{buildroot}/usr/share/man/man5/"
+cp stonesh.1.gz      "%{buildroot}/usr/share/man/man1/"
+cp stonewho.1.gz     "%{buildroot}/usr/share/man/man1/"
+cp README            "%{buildroot}/usr/share/doc/stonesh/"
+cp stonesh.pl        "%{buildroot}/usr/share/doc/stonesh/"
+cp NEWS              "%{buildroot}/usr/share/doc/stonesh/"
+cp TODO              "%{buildroot}/usr/share/doc/stonesh/"
+cp COPYING           "%{buildroot}/usr/share/doc/stonesh/"
+cp contrib/pam_script_ses_close "%{buildroot}/usr/share/doc/stonesh/contrib/"
+cp contrib/pam_script_ses_open  "%{buildroot}/usr/share/doc/stonesh/contrib/"
+
+%clean
+# Leave this section blank otherwise rpmbuild
+# will delete the entire iRODS build tree
+
+%files
+%defattr(0444,root,root,0755)
+%config(noreplace) %attr(0644,root,root) /etc/stonesh/hosts.lst
+%config(noreplace) %attr(0644,root,root) /etc/stonesh/users.lst
+%config(noreplace) %attr(0644,root,root) /etc/stonesh/stonesh.conf
+%attr(0750,root,root) /usr/sbin/stonewho
+%attr(0755,root,root) /usr/bin/stonesh
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/README
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/stonesh.pl
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/NEWS
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/TODO
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/contrib/
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/contrib/pam_script_ses_close
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/contrib/pam_script_ses_open
+%doc %attr(0644,root,root) /usr/share/doc/stonesh/COPYING
+%attr(0644,root,root) /usr/share/man/man5/users.lst.5.gz
+%attr(0644,root,root) /usr/share/man/man5/hosts.lst.5.gz
+%attr(0644,root,root) /usr/share/man/man5/stonesh.conf.5.gz
+%attr(0644,root,root) /usr/share/man/man1/stonewho.1.gz
+%attr(0644,root,root) /usr/share/man/man1/stonesh.1.gz
+
+%postun
+rm -rf /usr/share/doc/stonesh
+if [ ! "$(/bin/ls -A /etc/stonesh)" ]; then
+    rm -rf /etc/stonesh
+fi
+
+%changelog
+* Tue Dec 31 2013 Bennett Samowich <bennett@foolean>
+- Initial creation of .spec file

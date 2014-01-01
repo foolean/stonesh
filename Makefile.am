@@ -21,11 +21,15 @@ man1_MAN = stonesh.1 stonewho.1
 man5_MAN = hosts.lst.5 users.lst.5 stonesh.conf.5
 man_MANS = $(man1_MAN) $(man5_MAN) 
 
-EXTRA_DIST = \
-	$(man1_MAN) 	\
-	$(man5_MAN) 	\
-	$(sbin_SCRIPTS) \
-	contrib 	\
+EXTRA_DIST = 		 \
+	$(man1_MAN) 	 \
+	$(man5_MAN) 	 \
+	$(sbin_SCRIPTS)  \
+	$(sysconf_HOSTS) \
+	$(sysconf_USERS) \
+	$(sysconf_DATA)  \
+	contrib 	 \
+	stonesh.pl	 \
 	test
 
 CLEANFILES = 				\
@@ -48,7 +52,12 @@ CLEANFILES = 				\
 	debian/stonesh.debhelper.log  	\
 	debian/stonesh.substvars
 
-CLEANDIRS = \
+CLEANDIRS =                     \
+	packaging/rpm/BUILD     \
+	packaging/rpm/BUILDROOT \
+	packaging/rpm/SOURCES   \
+	packaging/rpm/SRPMS     \
+	packaging/rpm/RPMS      \
 	debian/stonesh
 
 DISTCLEANFILES = $(distdir).tar.gz
@@ -119,6 +128,31 @@ debian-package: debian/rules
 		echo "Error: Debian packaging tools not found." ; \
 		echo "Package build abandoned." ; \
 	fi
+
+rpm_topdir=`cd $(top_builddir) && pwd`/packaging/rpm
+rpm-package: dist
+	@if test x$(HAVE_RPMBUILD) = xyes ; then                                  \
+		cd $(rpm_topdir) ;                                                \
+		mkdir -p BUILD RPMS SOURCES SRPMS;                                \
+		cd BUILD;                                                         \
+		ln -sf ../../../$(distdir).tar.gz ;                               \
+		cd .. ;                                                           \
+		/bin/tar -C "SOURCES" --strip-components=1                        \
+			-xzf "BUILD/$(distdir).tar.gz";                           \
+		rpmbuild --define "_topdir `cd . && pwd`" --define "_prefix /usr" \
+			-ba SPECS/stonesh.spec &&                                 \
+			echo "Package successfully built in `pwd`/RPMS." &&       \
+			rm -f BUILD/$(distdir).tar.gz $(distdir).tar.gz ;         \
+	else                                                                      \
+		echo "Error: RPM executable and/or source directory not found." ; \
+		false;                                                            \
+	fi
+
+deb: debian-package
+	true
+
+rpm: rpm-package
+	true
 
 clean-local:
 	rm -rf $(CLEANDIRS)
