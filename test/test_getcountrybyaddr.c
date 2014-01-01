@@ -37,7 +37,7 @@ int test_getcountrybyaddr( char *in, char *data_file, char *out )
     memset(address, 0, strlen(in)+1);
     memcpy(address, in, strlen(in));
 
-    country = getcountrybyaddr( address, data_file );
+    country = (char*)getcountrybyaddr( address, data_file );
     /*@-null@*/
     printf( " = '%s' ", country );
     /*@+null@*/

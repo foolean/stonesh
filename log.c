@@ -103,6 +103,6 @@ void do_log(const char *txt, const char *fmt, va_list args)
 
     /* Send the message to syslog */
     openlog(progname, LOG_PID, LOG_DAEMON);
-    syslog(log_priority, msgbuf);
+    syslog(log_priority, "%s", msgbuf);
     closelog();
 }

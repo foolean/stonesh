@@ -1,11 +1,13 @@
+
 Stonesh, A.K.A "The Stone Shell", is a shell designed to be run on a
 bastion host which facilitates controlled access to internal systems
 without providing command-line access on the bastion host itself. 
 
 
--[ INSTALLATION ]-
+INSTALLATION
+------------
 
-# Debian
+# Debian, Ubuntu
 apt-get install build-essential libldap2-dev libgeoip-dev automake autoconf
 
 # CentOS
@@ -18,7 +20,8 @@ make test
 sudo make install
 
 
--[ CONFIGURATION ]-
+CONFIGURATION
+-------------
 
 * edit stonesh.conf
 
@@ -44,7 +47,8 @@ is user:[host1[+],host2[+],...].  The trailing '+' indicates that the user
 is permitted to use stonesh's proxy mode to that host.
 
 
--[ LDAP AUTHORIZATION ]-
+LDAP AUTHORIZATION
+------------------
 
 When enabled, stonesh will authorize client connections against a LDAP
 server by looking for appropriate host and authorizedService attributes. 
@@ -59,7 +63,8 @@ the tag is 'proxy' and the requesting proxied access to host 'foo.bar.com'
 will require a authorizedService attribute with the value 'proxy-foo'.
 
 
--[ CHROOTING ]-
+CHROOTING
+---------
 
 Whenever possible, it is adventageous to chroot users into an environment
 that only contains the applications and libraries necessary to perform
@@ -72,7 +77,8 @@ be created, and removed, on the fly using pam_script and the scripts provided
 in the contrib directory of the source.
 
 
--[ GeoIP ]-
+GeoIP
+-----
 
 Stonesh utilizes GeoIP to validate a client's country of origin.  The use
 of GeoIP is not a perfect sciece but should provide an adequate level of
