@@ -4,9 +4,11 @@ INC    = -I..
 LIBS   = -lGeoIP 
 SOURCE = geoip_t.c ../util.c ../geoip.c ../auth_local.c
 OBJECT = geoip_t
+OS     = $(shell grep "^ID=" /etc/os-release | cut -f2 -d=)
 
 SPLINT = splint -D__gnuc_va_list=va_list +posixlib
 VALGRIND = valgrind --leak-check=full --show-reachable=yes --error-exitcode=1
+
 
 all:
 	$(GCC) -o $(OBJECT) $(SOURCE) $(INC) $(LIBS)
@@ -49,25 +51,29 @@ run_t:
 	./test_gethostentry
 	./test_get_host_filter
 	./test_get_service_filter
-     
-valgrind_t:
-	@echo "running tests w/memory leak checking"
-	$(VALGRIND) ./test_trim
-	$(VALGRIND) ./test_strtolower
-	$(VALGRIND) ./test_strtoupper
-	$(VALGRIND) ./test_get_auth_file
-	$(VALGRIND) ./test_getafbyaddr
-	$(VALGRIND) ./test_is_local
-	$(VALGRIND) ./test_is_local6
-	$(VALGRIND) ./test_is_private
-	$(VALGRIND) ./test_is_private6
-	$(VALGRIND) ./test_getcountrybyaddr
-	$(VALGRIND) ./test_getcountrybyaddr6
-	$(VALGRIND) ./test_is_from_valid_country
-	$(VALGRIND) ./test_gethostentry
-	$(VALGRIND) ./test_get_host_filter
-	$(VALGRIND) ./test_get_service_filter
 
+valgrind_t:
+	if [ "$(OS)" = "ubuntu" ]; then                                 \
+		echo "### memory leak checking disabled for '$(OS)'";   \
+        else                                                            \
+		echo "running tests w/memory leak checking";            \
+		$(VALGRIND) ./test_trim;                                \
+		$(VALGRIND) ./test_strtolower;                          \
+		$(VALGRIND) ./test_strtoupper;                          \
+		$(VALGRIND) ./test_get_auth_file;                       \
+		$(VALGRIND) ./test_getafbyaddr;                         \
+		$(VALGRIND) ./test_is_local;                            \
+		$(VALGRIND) ./test_is_local6;                           \
+		$(VALGRIND) ./test_is_private;                          \
+		$(VALGRIND) ./test_is_private6;                         \
+		$(VALGRIND) ./test_getcountrybyaddr;                    \
+		$(VALGRIND) ./test_getcountrybyaddr6;                   \
+		$(VALGRIND) ./test_is_from_valid_country;               \
+		$(VALGRIND) ./test_gethostentry;                        \
+		$(VALGRIND) ./test_get_host_filter;                     \
+		$(VALGRIND) ./test_get_service_filter;                  \
+	fi
+ 
 test: clean splint t run_t valgrind_t
 	@echo "" 
 	@echo "##############################################################" 

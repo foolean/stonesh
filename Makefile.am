@@ -122,11 +122,11 @@ force_look:
 	true
 
 debian-package: debian/rules
-	@if test x$(HAVE_DPKG_BUILDPACKAGE) = xyes ; then \
-		dpkg-buildpackage -rfakeroot -us -uc ; \
-	else \
-		echo "Error: Debian packaging tools not found." ; \
-		echo "Package build abandoned." ; \
+	@if test x$(HAVE_DPKG_BUILDPACKAGE) = xyes ; then 		\
+		dpkg-buildpackage -rfakeroot -us -uc ; 			\
+	else 								\
+		echo "Error: Debian packaging tools not found." ; 	\
+		echo "Package build abandoned." ; 			\
 	fi
 
 rpm_topdir=`cd $(top_builddir) && pwd`/packaging/rpm
