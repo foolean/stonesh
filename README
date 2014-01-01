@@ -9,10 +9,11 @@ INSTALLATION
 
 # Debian, Ubuntu
 apt-get install build-essential libldap2-dev libgeoip-dev automake autoconf
+apt-get install splint valgrind
 
-# CentOS
+# RedHat, CentOS
 yum groupinstall "Development Tools"
-yum install GeoIP-dev openldap-dev automake autoconf
+yum install GeoIP-devel openldap-devel automake autoconf splint valgrind
 
 ./configure
 make

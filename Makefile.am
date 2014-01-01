@@ -140,6 +140,7 @@ rpm-package: dist
 		/bin/tar -C "SOURCES" --strip-components=1                        \
 			-xzf "BUILD/$(distdir).tar.gz";                           \
 		rpmbuild --define "_topdir `cd . && pwd`" --define "_prefix /usr" \
+			--buildroot="`cd . && pwd`/BUILDROOT/$(distdir)"          \
 			-ba SPECS/stonesh.spec &&                                 \
 			echo "Package successfully built in `pwd`/RPMS." &&       \
 			rm -f BUILD/$(distdir).tar.gz $(distdir).tar.gz ;         \
