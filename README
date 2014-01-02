@@ -15,6 +15,14 @@ apt-get install splint valgrind
 yum groupinstall "Development Tools"
 yum install GeoIP-devel openldap-devel automake autoconf splint valgrind
 
+# SLES, OpenSUSE
+zypper install openldap2-devel automake autoconf gcc libGeoIP-devel
+zypper install splint valgrind
+# SLES required manual installation of GeoIP and libGeoIP
+# http://software.opensuse.org/package/GeoIP
+# http://software.opensuse.org/package/libGeoIP1
+
+
 ./configure
 make
 make test
