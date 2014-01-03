@@ -33,6 +33,12 @@ t:
 	$(GCC) $(INC) -o test_get_auth_file test_get_auth_file.c ../util.c ../auth_local.c ../log.c
 	$(GCC) $(INC) -o test_get_host_filter test_get_host_filter.c ../util.c ../auth_ldap.c ../log.c ../readconf.c -lldap
 	$(GCC) $(INC) -o test_get_service_filter test_get_service_filter.c ../util.c ../auth_ldap.c ../log.c ../readconf.c -lldap
+	$(GCC) $(INC) -o test_error test_error.c ../log.c
+	$(GCC) $(INC) -o test_notice test_notice.c ../log.c
+	$(GCC) $(INC) -o test_debug test_debug.c ../log.c
+	$(GCC) $(INC) -o test_fatal test_fatal.c ../log.c
+	$(GCC) $(INC) -o test_fatal_1024 test_fatal_1024.c ../log.c
+	$(GCC) $(INC) -o test_fatal_1038 test_fatal_1038.c ../log.c
        
 run_t:
 	@echo "running tests"
@@ -72,6 +78,12 @@ valgrind_t:
 		$(VALGRIND) ./test_gethostentry;                        \
 		$(VALGRIND) ./test_get_host_filter;                     \
 		$(VALGRIND) ./test_get_service_filter;                  \
+		$(VALGRIND) ./test_notice;		                \
+		$(VALGRIND) ./test_error;		                \
+		$(VALGRIND) ./test_debug;		                \
+		$(VALGRIND) ./test_fatal.sh test_fatal;		        \
+		$(VALGRIND) ./test_fatal.sh test_fatal_1024;		\
+		$(VALGRIND) ./test_fatal.sh test_fatal_1038;		\
 	fi
  
 test: clean splint t run_t valgrind_t
@@ -101,3 +113,9 @@ clean:
 	/bin/rm -f test_gethostentry
 	/bin/rm -f test_get_host_filter
 	/bin/rm -f test_get_service_filter
+	/bin/rm -f test_notice
+	/bin/rm -f test_error
+	/bin/rm -f test_debug
+	/bin/rm -f test_fatal
+	/bin/rm -f test_fatal_1024
+	/bin/rm -f test_fatal_1038

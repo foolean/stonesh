@@ -32,12 +32,6 @@ auth_ldap.c:
     get_ldap_base
     get_auth_ldap
 
-log.c:
-    error
-    fatal
-    notice
-    debug
-
 readconf.c:
     strdelim
     parse_token
