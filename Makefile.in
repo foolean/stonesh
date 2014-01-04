@@ -273,7 +273,8 @@ CLEANFILES = \
 	test/test_get_service_filter 	\
 	test/test_gethostentry		\
 	debian/stonesh.debhelper.log  	\
-	debian/stonesh.substvars
+	debian/stonesh.substvars        \
+        debian/files
 
 CLEANDIRS = \
 	packaging/rpm/BUILD     \
