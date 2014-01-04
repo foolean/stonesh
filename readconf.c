@@ -300,7 +300,7 @@ char *strdelim( char **s )
     if ( *s == NULL ) {
         return( NULL );
     }
-
+    trim(*s);
     old = *s;
 
     *s = strpbrk( *s, WHITESPACE QUOTE "=" );
