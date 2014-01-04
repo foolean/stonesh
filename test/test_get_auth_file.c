@@ -48,8 +48,8 @@ int main()
     int errors = 0;
     int tests = 0;
 
-    /* test the strtoupper function */
-    printf( "testing util.c:strtoupper()\n" );
+    /* test the get_auth_file function */
+    printf( "testing auth_local.c:get_auth_file()\n" );
 
     tests++; errors += test_get_auth_file( "user01", "host011", NULL, 0, 0 );
     tests++; errors += test_get_auth_file( "user01", NULL, "test_users.lst", 0, 0 );
