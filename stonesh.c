@@ -177,7 +177,6 @@ int main( int argc, char **argv )
                 status = EXIT_FAILURE;
                 goto clean_exit;
             }
-            host  = strtok(host, ".");  /* grab only the hostname not the fqdn */
             proxy = 1;
             // args  = "";
         } else {
@@ -227,6 +226,13 @@ int main( int argc, char **argv )
         status = EXIT_FAILURE;
         goto clean_exit;
     } 
+
+    /* We only want the hostname */
+    if ( options.allowfqdn == 0 ) {
+       host = strtok( options.host, "." );
+       strncpy( options.host, host, strlen(host) );
+    }
+
     /*@-null@*/
     debug("host = %s", options.host);
     /*@+null@*/

@@ -65,6 +65,7 @@ typedef enum {
     oBadOption,
     oAuthorizedServiceTag,
     oAuthType,
+    oAllowFQDN,
     oDebug,
     oDisableAuthorization,
     oLogToSTDERR,
@@ -89,6 +90,7 @@ typedef struct {
     int  use_ldap;
     int  enable_proxy;
     int  auth_type;
+    int  allowfqdn;
     int  disable_authorization;
     /*@null@*/ char *host;
     /*@null@*/ char *port;

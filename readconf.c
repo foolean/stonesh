@@ -43,6 +43,7 @@ static struct {
     OpCodes opcode;
 } keywords[] = {
     { "authorizedservicetag", oAuthorizedServiceTag },
+    { "allowfqdn", oAllowFQDN },
     { "debug", oDebug },
     { "logtostderr", oLogToSTDERR },
     { "useldap", oUseLDAP },
@@ -268,6 +269,10 @@ parse_string:
             intptr = &options->disable_authorization;
             goto parse_flag;
 
+        case oAllowFQDN:
+            intptr = &options->allowfqdn;
+            goto parse_flag;
+
         default:
             error( "process_config_line: Unimplemented opcode %d", opcode );
             status = -1;    /* abort when we get back */
@@ -363,7 +368,8 @@ void initialize_options( Options * options )
     options->use_ldap               = -1;
     options->enable_proxy           = -1;
     options->disable_authorization  = -1;
-    options->auth_type              = -1;;
+    options->auth_type              = -1;
+    options->allowfqdn              = -1;
     OPT_FREE( options->authorized_service_tag );
     OPT_FREE( options->proxy_keyword );
     OPT_FREE( options->ldap_base );
@@ -417,6 +423,9 @@ void fill_default_options( Options *options )
     }
     if ( options->disable_authorization == -1 ) {
         options->disable_authorization = 0;
+    }
+    if ( options->allowfqdn == -1 ) {
+        options->allowfqdn = 0;
     }
     if ( options->auth_type == -1 ) {
         if ( options->disable_authorization == 1 ) {
