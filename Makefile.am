@@ -49,6 +49,21 @@ CLEANFILES = 				\
 	test/test_get_host_filter 	\
 	test/test_get_service_filter 	\
 	test/test_gethostentry		\
+	test/test_debug			\
+	test/test_error			\
+	test/test_fatal			\
+	test/test_fatal_1024		\
+	test/test_fatal_1038		\
+	test/test_notice		\
+	test/test_parse_token		\
+	test/test_process_config_line	\
+	test/test_fill_default_options	\
+	test/test_strdelim		\
+	test/test_read_config_file_01	\
+	test/test_read_config_file_02	\
+	test/test_read_config_file_03	\
+	test/test_get_ldap_uri		\
+	test/test_get_ldap_base		\
 	debian/stonesh.debhelper.log  	\
 	debian/stonesh.substvars        \
         debian/files

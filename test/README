@@ -28,21 +28,8 @@ auth.c:
     auth_user
 
 auth_ldap.c:
-    get_ldap_uri
-    get_ldap_base
     get_auth_ldap
-
-readconf.c:
-    strdelim
-    parse_token
-    process_config_line
-    initialize_options
-    fill_default_options
-    free_options
-    read_config_file
 
 stonesh.c:
     main
-    usage
-    version
     catch_signal

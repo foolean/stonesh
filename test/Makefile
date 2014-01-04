@@ -39,6 +39,15 @@ t:
 	$(GCC) $(INC) -o test_fatal test_fatal.c ../log.c
 	$(GCC) $(INC) -o test_fatal_1024 test_fatal_1024.c ../log.c
 	$(GCC) $(INC) -o test_fatal_1038 test_fatal_1038.c ../log.c
+	$(GCC) $(INC) -o test_parse_token test_parse_token.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_strdelim test_strdelim.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_process_config_line test_process_config_line.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_fill_default_options test_fill_default_options.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_read_config_file_01 test_read_config_file_01.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_read_config_file_02 test_read_config_file_02.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_read_config_file_03 test_read_config_file_03.c ../readconf.c ../log.c ../util.c
+	$(GCC) $(INC) -o test_get_ldap_uri test_get_ldap_uri.c ../auth_ldap.c ../readconf.c ../log.c ../util.c -lldap
+	$(GCC) $(INC) -o test_get_ldap_base test_get_ldap_base.c ../auth_ldap.c ../readconf.c ../log.c ../util.c -lldap
        
 run_t:
 	@echo "running tests"
@@ -57,6 +66,15 @@ run_t:
 	./test_gethostentry
 	./test_get_host_filter
 	./test_get_service_filter
+	./test_strdelim
+	./test_parse_token
+	./test_process_config_line
+	./test_fill_default_options
+	./test_read_config_file_01
+	./test_read_config_file_02
+	./test_read_config_file_03
+	./test_get_ldap_uri
+	./test_get_ldap_base
 
 valgrind_t:
 	if [ "$(OS)" = "ubuntu" ]; then                                 \
@@ -84,6 +102,17 @@ valgrind_t:
 		$(VALGRIND) ./test_fatal.sh test_fatal;		        \
 		$(VALGRIND) ./test_fatal.sh test_fatal_1024;		\
 		$(VALGRIND) ./test_fatal.sh test_fatal_1038;		\
+		$(VALGRIND) ./test_strdelim;				\
+		$(VALGRIND) ./test_parse_token;				\
+		$(VALGRIND) ./test_process_config_line;			\
+		$(VALGRIND) ./test_fill_defaults_options;		\
+		$(VALGRIND) ./test_read_config_file_01;			\
+		$(VALGRIND) ./test_read_config_file_02;			\
+		$(VALGRIND) ./test_read_config_file_03;			\
+		$(VALGRIND) ./test_get_ldap_uri;			\
+		$(VALGRIND) ./test_get_ldap_base;			\
+		$(VALGRIND) ./test_usage.sh;				\
+		$(VALGRIND) ./test_version.sh;				\
 	fi
  
 test: clean splint t run_t valgrind_t
@@ -119,3 +148,12 @@ clean:
 	/bin/rm -f test_fatal
 	/bin/rm -f test_fatal_1024
 	/bin/rm -f test_fatal_1038
+	/bin/rm -f test_strdelim
+	/bin/rm -f test_parse_token
+	/bin/rm -f test_process_config_line
+	/bin/rm -f test_fill_default_options
+	/bin/rm -f test_read_config_file_01
+	/bin/rm -f test_read_config_file_02
+	/bin/rm -f test_read_config_file_03
+	/bin/rm -f test_get_ldap_uri
+	/bin/rm -f test_get_ldap_base
