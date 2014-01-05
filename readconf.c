@@ -419,7 +419,7 @@ void fill_default_options( Options *options )
         options->use_ldap = 0;
     }
     if ( options->enable_proxy == -1 ) {
-        options->enable_proxy = 1;
+        options->enable_proxy = 0;
     }
     if ( options->disable_authorization == -1 ) {
         options->disable_authorization = 0;
@@ -535,6 +535,6 @@ void fill_default_options( Options *options )
             exit( EXIT_FAILURE );
         }
         memset(options->geoip6_dat, 0, strlen(GEOIP6_DAT) + 1 );
-        strncpy(options->geoip6_dat, GEOIP_DAT, strlen(GEOIP6_DAT));
+        strncpy(options->geoip6_dat, GEOIP6_DAT, strlen(GEOIP6_DAT));
     }
 }
