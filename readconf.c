@@ -65,7 +65,7 @@ static struct {
 /*
  * read_config_file - main configuration parsing function.
  */
-void read_config_file( const char *filename, Options *options )
+int read_config_file( const char *filename, Options *options )
 {
     FILE *f;
     char line[1024];
@@ -76,8 +76,9 @@ void read_config_file( const char *filename, Options *options )
 
     /* open the configuration file */
     if ( (f = fopen( filename, "r" ) ) == NULL ) {
-        fatal( "unable to open file '%s': %s", filename, strerror( errno ) );
-        EXIT( EXIT_FAILURE );   /* should never get here */
+        free_options( options );
+        error( "unable to open file '%s': %s", filename, strerror( errno ) );
+        return(0);
     }
 
     /* initialize the options structure */
@@ -104,13 +105,13 @@ void read_config_file( const char *filename, Options *options )
     if ( bad_options > 0 ) {
         error( "%s: terminating, %d bad configuration options", filename, bad_options );
         free_options( options );
-        EXIT( EXIT_FAILURE );   /* should never get here */
+        return(0);
     }
 
     /* set any unset options to their defaults */
     fill_default_options( options );
 
-    return;
+    return(1);
 }
 
 int process_config_line(Options *options,

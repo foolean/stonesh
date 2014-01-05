@@ -118,6 +118,6 @@ void fill_default_options( Options* );
 void free_options( Options* );
 /*@+exportlocal@*/
 
-void read_config_file( const char*, Options* );
+int read_config_file( const char*, Options* );
 
 #endif /* _READCONF_H */

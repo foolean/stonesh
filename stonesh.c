@@ -120,7 +120,12 @@ int main( int argc, char **argv )
         Cval = strdup( DEFAULTCONFIGFILE ); 
         /*@+unrecog@*/
     }
-    read_config_file( Cval, &options );
+    if ( read_config_file( Cval, &options ) == 0 ) {
+        error("unable to read configuration file");
+        status = EXIT_FAILURE;
+        STONESH_FREE( Cval );
+        goto clean_exit;
+    }
     STONESH_FREE( Cval );
 
     if ( log_to_stderr > 0 ) { options.log_to_stderr = 1; }

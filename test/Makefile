@@ -113,6 +113,7 @@ valgrind_t:
 		$(VALGRIND) ./test_get_ldap_base;			\
 		$(VALGRIND) ./test_usage.sh;				\
 		$(VALGRIND) ./test_version.sh;				\
+		$(VALGRIND) ./test_stonesh_bad_config.sh;		\
 	fi
  
 test: clean splint t run_t valgrind_t
