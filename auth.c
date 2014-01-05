@@ -44,9 +44,13 @@ int auth_user( char *user, char *host, int mode )
             /*@+unreachable@*/
         case AUTH_TYPE_LOCAL:
             if ( mode == AUTH_PROXY ) {
-                auth = get_auth_file( user, host, AUTHUSERSFILE, 1 );
+                /*@-null@*/
+                auth = get_auth_file( user, host, options.users_file, 1 );
+                /*@+null@*/
             } else {
-                auth = get_auth_file( user, host, AUTHUSERSFILE, 0 );
+                /*@-null@*/
+                auth = get_auth_file( user, host, options.users_file, 0 );
+                /*@+null@*/
             }
             break;
         case AUTH_TYPE_LDAP:

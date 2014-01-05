@@ -139,6 +139,7 @@ int main( int argc, char **argv )
     debug( "enable_proxy = '%i'", options.enable_proxy );
     debug( "proxy_keyword = '%s'", options.proxy_keyword );
     debug( "hosts_file = '%s'", options.hosts_file );
+    debug( "users_file = '%s'", options.users_file );
     debug( "use_ldap = '%i'", options.use_ldap );
     debug( "ldap_uri = '%s'", options.ldap_uri );
     debug( "ldap_base = '%s", options.ldap_base );
