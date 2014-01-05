@@ -108,6 +108,7 @@ extern Options options;
         base = strdup( value );
         /*@+unrecog@*/
         ldap_memfree( value );
+        ldap_free();
     }
 
     /*@-globstate@*/
