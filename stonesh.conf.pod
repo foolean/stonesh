@@ -14,9 +14,9 @@ stonesh(1) reads configuration data from /etc/stonesh/stonesh.conf.  The file co
 
 =over 6
 
-=item B<debug> [true|false]
+=item B<allowFQDN> [true|false]
 
-Turns debug logging on or off.
+Permit the use of FQDN which will allow stonesh to act as a bastion host for systems outside of the local domain of the bastion host itself.  Setting allowFQDN to false will cause stonesh to use only the hostname of the requested destination.
 
 default: false
 
@@ -26,11 +26,59 @@ Tag to prepend to the hostname when querying LDAP for proxied access authorizati
 
 default: proxy
 
+=item B<debug> [true|false]
+
+Turns debug logging on or off.
+
+default: false
+
+=item B<disableAuthorization> [true|false]
+
+Disable the authorization mechanisms.  Setting this to true will permit any authenticated user to use this bastion host.
+
+default: false
+
 =item B<enableProxy> [true|false]
 
 Enables or disables proxied session setup.  When disabled only bastioned connections are permitted.
 
 default: false
+
+=item B<GeoIP> [path]
+
+Full path to the IPv4 GeoIP database
+
+default: /usr/share/GeoIP/GeoIP.dat
+
+=item B<GeoIP6> [path]
+
+Full path to the IPv6 GeoIP database
+
+default: /usr/share/GeoIP/GeoIP6.dat
+
+=item B<HostsFile> [file]
+
+File containing the list of hosts that stonesh will permit access to.
+
+default: /etc/stonesh/hosts.lst
+
+=item B<LDAPuri> [uri]
+
+The LDAP URI used to connect to the LDAP server.
+
+default: the value found in ldap.conf
+
+=item B<LDAPbase> [base]
+
+The search base for LDAP queries.
+
+default: the value found in ldap.conf
+
+=item B<ncPath> [path]
+
+Full path to the netcat binary to use for proxied sessions.
+
+default: /bin/nc
 
 =item B<proxyKeyword>
 
@@ -46,53 +94,23 @@ ssh -oProxyCommand="ssh bastion <keyword> %h" <host>
 
 default: direct
 
-=item B<useLDAP> [true|false]
-
-Enable or disable the use of LDAP for client authorization.
-
-default: true
-
-=item B<LDAPuri> [uri]
-
-The LDAP URI used to connect to the LDAP server.
-
-default: the value found in ldap.conf
-
-=item B<LDAPbase> [base]
-
-The search base for LDAP queries.
-
-default: the value found in ldap.conf
-
-=item B<HostsFile> [file]
-
-File containing the list of hosts that stonesh will permit access to.
-
-default: /etc/stonesh/hosts.lst
-
 =item B<sshPath> [path]
 
 Full path to the ssh binary to use for bastioned sessions.  
 
 default: /usr/bin/ssh
 
-=item B<ncPath> [path]
+=item B<useLDAP> [true|false]
 
-Full path to the netcat binary to use for proxied sessions.
+Enable or disable the use of LDAP for client authorization.  Setting useLDAP to false will cause stonesh to use local authorization.
 
-default: /bin/nc
+default: false
 
-=item B<GeoIP> [path]
+=item B<usersFile> [file]
 
-Full path to the IPv4 GeoIP database
+File containing the list of users and thier permitted hosts.
 
-default: /usr/share/GeoIP/GeoIP.dat
-
-=item B<GeoIP6> [path]
-
-Full path to the IPv6 GeoIP database
-
-default: /usr/share/GeoIP/GeoIP6.dat
+default: /etc/stonesh/users.lst
 
 =back
 
