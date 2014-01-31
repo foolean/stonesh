@@ -1,3 +1,9 @@
+3.2.1:
+
+    * Fixed Debian packaging
+
+    * Removed bash dependency from regression tests
+
 3.2.0:
 
     * Allow the use of fqdn when requesting hosts
