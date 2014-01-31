@@ -139,7 +139,7 @@ force_look:
 
 debian-package: debian/rules
 	@if test x$(HAVE_DPKG_BUILDPACKAGE) = xyes ; then 		\
-		dpkg-buildpackage -rfakeroot -us -uc -nc ; 		\
+		debian/rules build && debian/rules binary ;             \
 	else 								\
 		echo "Error: Debian packaging tools not found." ; 	\
 		echo "Package build abandoned." ; 			\

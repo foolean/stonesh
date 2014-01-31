@@ -8,8 +8,17 @@ INSTALLATION
 ------------
 
 # Debian, Ubuntu
-apt-get install build-essential libldap2-dev libgeoip-dev automake autoconf
-apt-get install splint valgrind
+apt-get install      \
+    build-essential  \
+    debhelper        \
+    automake         \
+    autoconf         \
+    libc6-dev-am64   \
+    libc6-dev-i386   \
+    libldap2-dev     \
+    libgeoip-dev     \
+    splint           \
+    valgrind
 
 # RedHat, CentOS
 yum groupinstall "Development Tools"
