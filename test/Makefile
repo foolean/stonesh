@@ -99,9 +99,9 @@ valgrind_t:
 		$(VALGRIND) ./test_notice;		                \
 		$(VALGRIND) ./test_error;		                \
 		$(VALGRIND) ./test_debug;		                \
-		$(VALGRIND) ./test_fatal.sh test_fatal;		        \
-		$(VALGRIND) ./test_fatal.sh test_fatal_1024;		\
-		$(VALGRIND) ./test_fatal.sh test_fatal_1038;		\
+		$(VALGRIND) ./test_fatal || echo '';                    \
+		$(VALGRIND) ./test_fatal_1024 || echo '';               \
+		$(VALGRIND) ./test_fatal_1038 || echo '';               \
 		$(VALGRIND) ./test_strdelim;				\
 		$(VALGRIND) ./test_parse_token;				\
 		$(VALGRIND) ./test_process_config_line;			\
@@ -111,9 +111,9 @@ valgrind_t:
 		$(VALGRIND) ./test_read_config_file_03;			\
 		$(VALGRIND) ./test_get_ldap_uri;			\
 		$(VALGRIND) ./test_get_ldap_base;			\
-		$(VALGRIND) ./test_usage.sh;				\
-		$(VALGRIND) ./test_version.sh;				\
-		$(VALGRIND) ./test_stonesh_bad_config.sh;		\
+		$(VALGRIND) ../stonesh -h || echo '';                   \
+		$(VALGRIND) ../stonesh -v || echo '';                   \
+		$(VALGRIND) ../stonesh -C "bad_config_file.conf" -c "localhost" || echo ''; \
 	fi
  
 test: clean splint t run_t valgrind_t
