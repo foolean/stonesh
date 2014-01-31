@@ -13,6 +13,9 @@ AM_INIT_AUTOMAKE([stonesh], [version_major.version_minor.version_micro_extra])
 AC_CONFIG_SRCDIR([stonesh.c])
 AC_CONFIG_HEADERS([config.h])
 
+# Get the current UTC date and time in RFC 2822 format.
+AC_SUBST( DATE, $(date -Ru) )
+
 # Checks for programs.
 AC_PROG_CC
 

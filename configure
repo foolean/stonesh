@@ -649,6 +649,7 @@ CPPFLAGS
 LDFLAGS
 CFLAGS
 CC
+DATE
 am__untar
 am__tar
 AMTAR
@@ -2643,6 +2644,10 @@ am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 ac_config_headers="$ac_config_headers config.h"
+
+
+# Get the current UTC date and time in RFC 2822 format.
+DATE=$(date -Ru)
 
 
 # Checks for programs.
