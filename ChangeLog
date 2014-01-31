@@ -1,3 +1,13 @@
+3.2.0:
+
+    * Allow the use of fqdn when requesting hosts
+
+    * More regression tests
+
+    * Fixed 'lost memory' bug in LDAP routines
+
+    * Other minor bug fixes
+
 3.1.0:
 
     * Added local file-based authorization
