@@ -9,9 +9,17 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+export DEBUILD_DPKG_BUILDPACKAGE_OPTS = --lintian
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
+export DEB_BUILD_ARCH  = $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+export PACKAGE_NAME    = $(shell dpkg-parsechangelog --show-field source)
+export PACKAGE_VERSION = $(shell dpkg-parsechangelog --show-field version)
+
 %:
 	dh $@ 
+
+lintian:
+	@lintian --fail-on-warnings -I -i "../${PACKAGE_NAME}_${PACKAGE_VERSION}_${DEB_BUILD_ARCH}.deb"
