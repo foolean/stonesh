@@ -1,5 +1,5 @@
-stonesh (@VERSION@-1) unstable; urgency=low
+stonesh (@VERSION@-2) unstable; urgency=low
 
   * Self-made package
 
- -- Stonesh self-made package <stonesh@foolean.org> @DATE@
+ -- Stonesh self-made package <stonesh@foolean.org>  @DATE@
