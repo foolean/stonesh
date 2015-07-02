@@ -166,7 +166,15 @@ rpm-package: dist
 	fi
 
 deb: debian-package
-	true
+	@echo "" 
+	@echo "###########################################################" 
+	@echo "###                                                     ###"
+	@echo "###                  CONGRATULATIONS!!!                 ###" 
+	@echo "###                                                     ###"
+	@echo "### It would appear that the lintian tests have passed! ###"
+	@echo "###                                                     ###"
+	@echo "###########################################################" 
+	@echo "" 
 
 rpm: rpm-package
 	true
