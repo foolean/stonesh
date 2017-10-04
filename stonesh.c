@@ -241,6 +241,7 @@ int main( int argc, char **argv )
 
     /*@-null@*/
     debug("host = %s", options.host);
+    debug("cval = %s", cval);
     /*@+null@*/
    
     /* get the hostentry structure */
@@ -257,7 +258,9 @@ int main( int argc, char **argv )
     }
 
     /* determine if we're authorized. */
-    if ( cval != NULL && options.host != NULL ) {
+    if ( cval == NULL ) {
+        auth = auth_user( pwd->pw_name, hostent->host, AUTH_BASTION );
+    } else {
         if ( strncmp( cval, options.host, strlen(cval) ) == 0 ) {
             auth = auth_user( pwd->pw_name, hostent->host, AUTH_BASTION );
         } else {
