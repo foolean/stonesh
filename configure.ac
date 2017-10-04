@@ -8,8 +8,8 @@ m4_define([version_micro_extra], version_micro)
 m4_append([version_micro_extra], [])
 
 AC_PREREQ([2.67])
-AC_INIT([stonesh], [version_major.version_minor.version_micro_extra], [bennett@foolean.org])
-AM_INIT_AUTOMAKE([stonesh], [version_major.version_minor.version_micro_extra])
+AC_INIT([stonesh], [version_major.version_minor.version_micro_extra])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([stonesh.c])
 AC_CONFIG_HEADERS([config.h])
 
