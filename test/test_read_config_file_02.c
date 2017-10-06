@@ -62,6 +62,9 @@ int main()
     printf( "options.disable_authorization  = '%i' ", options.disable_authorization );
     tests++; if ( options.disable_authorization != 0 ) { printf("failed\n"); errors++; } else { printf("passed\n"); }
 
+    printf( "options.disable_proxy_authorization  = '%i' ", options.disable_proxy_authorization );
+    tests++; if ( options.disable_proxy_authorization != 0 ) { printf("failed\n"); errors++; } else { printf("passed\n"); }
+
     printf( "options.host = '%s' ", options.host );
     tests++; if ( options.host != NULL ) { printf("failed\n"); errors++; } else { printf("passed\n"); }
 

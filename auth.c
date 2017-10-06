@@ -43,7 +43,7 @@ int auth_user( char *user, char *host, int mode )
             break;
             /*@+unreachable@*/
         case AUTH_TYPE_LOCAL:
-            if ( mode == AUTH_PROXY ) {
+            if ( mode == AUTH_PROXY && options.disable_proxy_authorization ==  0) {
                 /*@-null@*/
                 auth = get_auth_file( user, host, options.users_file, 1 );
                 /*@+null@*/
@@ -54,7 +54,7 @@ int auth_user( char *user, char *host, int mode )
             }
             break;
         case AUTH_TYPE_LDAP:
-            if ( mode == AUTH_PROXY ) {
+            if ( mode == AUTH_PROXY && options.disable_proxy_authorization ==  0) {
                 /*@-null@*/
                 auth = get_auth_ldap( user, host, options.authorized_service_tag );
                 /*@+null@*/

@@ -38,6 +38,12 @@ Disable the authorization mechanisms.  Setting this to true will permit any auth
 
 default: false
 
+=item B<disableProxyAuthorization> [true|false]
+
+Disable the proxy-mode authorization mechanisms.  Setting this to true will permit any authenticated user to use proxy-mode with any host they are authorized for.
+
+default: false
+
 =item B<enableProxy> [true|false]
 
 Enables or disables proxied session setup.  When disabled only bastioned connections are permitted.

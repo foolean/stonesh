@@ -83,6 +83,10 @@ int main()
     tests++; errors += test_parse_token( "disableauthorization", oDisableAuthorization );
     tests++; errors += test_parse_token( "disableAuthorization", oDisableAuthorization );
     tests++; errors += test_parse_token( "DisableAuthorization", oDisableAuthorization );
+    tests++; errors += test_parse_token( "disableproxyauthorization", oDisableProxyAuthorization );
+    tests++; errors += test_parse_token( "disableproxyAuthorization", oDisableProxyAuthorization );
+    tests++; errors += test_parse_token( "disableProxyAuthorization", oDisableProxyAuthorization );
+    tests++; errors += test_parse_token( "DisableProxyAuthorization", oDisableProxyAuthorization );
     tests++; errors += test_parse_token( "sshpath", oSSHPath );
     tests++; errors += test_parse_token( "SSHPath", oSSHPath );
     tests++; errors += test_parse_token( "ncpath", oNCPath );

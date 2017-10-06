@@ -116,7 +116,8 @@ valgrind_t:
 		$(VALGRIND) ../stonesh -C "bad_config_file.conf" -c "localhost" || echo ''; \
 	fi
  
-test: clean splint t run_t valgrind_t
+#test: clean splint t run_t valgrind_t
+test: clean t run_t valgrind_t
 	@echo "" 
 	@echo "##############################################################" 
 	@echo "###                                                        ###"

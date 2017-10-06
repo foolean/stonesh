@@ -54,6 +54,7 @@ static struct {
     { "usersfile", oUsersFile },
     { "enableproxy", oEnableProxy },
     { "disableauthorization", oDisableAuthorization },
+    { "disableproxyauthorization", oDisableProxyAuthorization },
     { "sshpath", oSSHPath },
     { "ncpath", oNCPath },
     { "nctimeout", oNCTimeout },
@@ -270,6 +271,10 @@ parse_string:
             intptr = &options->disable_authorization;
             goto parse_flag;
 
+        case oDisableProxyAuthorization:
+            intptr = &options->disable_proxy_authorization;
+            goto parse_flag;
+
         case oAllowFQDN:
             intptr = &options->allowfqdn;
             goto parse_flag;
@@ -364,13 +369,14 @@ OpCodes parse_token( char *cp,  const char *filename, int linenum )
 void initialize_options( Options * options )
 {
     memset( options, 0, sizeof( *options ) );
-    options->debug                  = -1;
-    options->log_to_stderr          = -1;
-    options->use_ldap               = -1;
-    options->enable_proxy           = -1;
-    options->disable_authorization  = -1;
-    options->auth_type              = -1;
-    options->allowfqdn              = -1;
+    options->debug                       = -1;
+    options->log_to_stderr               = -1;
+    options->use_ldap                    = -1;
+    options->enable_proxy                = -1;
+    options->disable_authorization       = -1;
+    options->disable_proxy_authorization = -1;
+    options->auth_type                   = -1;
+    options->allowfqdn                   = -1;
     OPT_FREE( options->authorized_service_tag );
     OPT_FREE( options->proxy_keyword );
     OPT_FREE( options->ldap_base );
@@ -424,6 +430,9 @@ void fill_default_options( Options *options )
     }
     if ( options->disable_authorization == -1 ) {
         options->disable_authorization = 0;
+    }
+    if ( options->disable_proxy_authorization == -1 ) {
+        options->disable_proxy_authorization = 0;
     }
     if ( options->allowfqdn == -1 ) {
         options->allowfqdn = 0;
